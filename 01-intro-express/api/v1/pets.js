@@ -27,9 +27,9 @@ const petList = {
 
 //Definir una ruta para obtener la lista de mascotas
 
-router.get("/api/v1/pets", (req, res) => {
-  res.send(petList);
-});
+//router.get("/api/v1/pets", (req, res) => {
+//  res.send(petList);
+//});
 
 /*  PARAMS */
 //Obtener parámetros de una ruta dinámica (una mascota)
@@ -46,5 +46,25 @@ router.get('/api/v1/pets/:petId', (req, res) => {
     }    
 }); 
 
+/* QUERY */
+//Son similares a Params pero se suelen usar para buscar información.
+//Sobre todo cuando ocupamos mandar más de un dato.
+//Las QUERY son abiertas no definimos los nombres de los parámetros en la ruta.
+//La responsabilidad del BACKEND es SOLO tomar en cuenta las querys que le interesen.
+//Ejemplo Query: '/api/v1/pets?type=dog&age=3'
+router.get("/api/v1/pets", (req, res) => {
+    //El objeto que contiene las Query es: req.query (es un objeto con todas las querys
+    //enviadas por el usuario)
+    //console.log(req.query);
+    const { type, age } = req.query;
+
+    const filteredPets = petList.pets.filter(pet => 
+        type && age ? pet.type === type && pet.age === parseInt(age) :
+        type ? pet.type === type :
+        age ? pet.age === parseInt(age) :
+        true
+    );
+    res.send(filteredPets);
+});
 
 module.exports = router; //Exporta el router para que pueda ser usado en otro archivo
